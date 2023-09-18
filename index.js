@@ -14,6 +14,9 @@ app.use(cors(corsOptions)); //Cors security, users cannot send requests to not a
 app.use(express.json());
 app.use(cookieParser()); //cookie handler in http requests and responses
 
+// api/users and /api/user
+app.use('/api', require('./backend/routes/userRoutes'));
+
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
