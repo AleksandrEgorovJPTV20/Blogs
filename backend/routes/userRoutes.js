@@ -12,7 +12,7 @@ router.post('/users', userController.registerUser);
 //Чтение авторизованного пользователя
 router.get('/user',verifyJWT, userController.getCurrentUser);
 
-//Обновлениие пользователя
+//Обновление пользователя
 router.put('/user',verifyJWT, userController.updateUser);
 
 module.exports = router;

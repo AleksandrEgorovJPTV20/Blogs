@@ -1,11 +1,12 @@
-//Проверка ключа
+//Проверка ключа (необъязательно)
 const jwt = require('jsonwebtoken');
 
-const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+const JWTOptional = (req, res, next) => {
+    const authHeader = req.headers.authorization || req.headers.Authorization
 
-    if (!authHeader || !authHeader.startsWith('Token ')) {
-        return res.status(401).json({ message: 'Unauthorized' });
+    if (!authHeader || !authHeader?.startsWith('Token ') || !authHeader.split(' ')[1].length) {
+        req.loggedin = false;
+        return next();
     }
 
     const token = authHeader.split(' ')[1];
@@ -17,6 +18,7 @@ const verifyJWT = (req, res, next) => {
             if (err) {
                 return res.status(403).json({ message: 'Forbidden' });
             }
+            req.loggedin = true;
             req.userId = decoded.user.id;
             req.userEmail = decoded.user.email;
             req.userHashedPwd = decoded.user.password;
@@ -25,4 +27,4 @@ const verifyJWT = (req, res, next) => {
     )
 };
 
-module.exports = verifyJWT;
+module.exports = JWTOptional;

@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: false,
+        unique: true,
         lowercase: true
     },
     password: {
@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         lowercase: true,
-        unique: false,
+        unique: true,
         match: [/\S+@\S+\.\S+/, 'is invalid'],
         index: true
     },
@@ -33,20 +33,6 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    subscription: {
-        type: {
-          type: String,
-          default: 'free', // Set a default value
-        },
-        articlesLeft: {
-          type: Number,
-          default: 5, // Set a default value
-        },
-        expires: {
-          type: Date,
-          default: new Date('2023-12-31T23:59:59Z'), // Set a default value
-        },
-    },
     favouriteArticles: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Article'
@@ -54,13 +40,17 @@ const userSchema = new mongoose.Schema({
     followingUsers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    subscriptionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserSubscription',
+      },
 },
     {
         timestamps: false,
         versionKey: false,
     }
-    );
+);
 
 userSchema.plugin(uniqueValidator);
 
@@ -110,6 +100,7 @@ userSchema.methods.isFollowing = function (id) {
     return false;
 };
 
+//profile следить
 userSchema.methods.follow = function (id) {
     if(this.followingUsers.indexOf(id) === -1){
         this.followingUsers.push(id);
@@ -124,6 +115,7 @@ userSchema.methods.unfollow = function (id) {
     return this.save();
 };
 
+//Articles - добавить в массив любимые
 userSchema.methods.isFavourite = function (id) {
     const idStr = id.toString();
     for (const article of this.favouriteArticles) {

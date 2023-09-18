@@ -16,6 +16,11 @@ app.use(cookieParser()); //cookie handler in http requests and responses
 
 // api/users and /api/user
 app.use('/api', require('./backend/routes/userRoutes'));
+// api/subscription
+app.use('/api', require('./backend/routes/subscriptionRoutes'));
+
+// user routes profiles
+app.use('/api/profiles', require('./backend/routes/profileRoutes'));
 
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => {

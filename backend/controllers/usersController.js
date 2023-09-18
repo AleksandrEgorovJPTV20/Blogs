@@ -10,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const { user } = req.body;
 
     if (!user || !user.email || !user.username || !user.password) {
-        return res.status(400).json({message: "All fields are required"});
+        return res.status(400).json({message: "Email, username, password should be not empty."});
     }
 
     //Хеширование пароля
@@ -31,7 +31,7 @@ const registerUser = asyncHandler(async (req, res) => {
     } else {
         res.status(422).json({
             errors: {
-                body: "Unable to register a user"
+                body: "Failed to register."
             }
         });
     }
@@ -45,7 +45,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-        return res.status(404).json({message: "User Not Found"});
+        return res.status(404).json({message: "User not found."});
     }
 
     res.status(200).json({
@@ -61,19 +61,19 @@ const userLogin = asyncHandler(async (req, res) => {
     const { user } = req.body;
 
     if (!user || !user.email || !user.password) {
-        return res.status(400).json({message: "All fields are required"});
+        return res.status(400).json({message: "Email, password should be not empty."});
     }
 
     const loginUser = await User.findOne({ email: user.email }).exec();
 
 
     if (!loginUser) {
-        return res.status(404).json({message: "User Not Found"});
+        return res.status(404).json({message: "User not found."});
     }
 
     const match = await bcrypt.compare(user.password, loginUser.password);
 
-    if (!match) return res.status(401).json({ message: 'Unauthorized: Wrong password' })
+    if (!match) return res.status(401).json({ message: 'Wrong password.' })
 
     res.status(200).json({
         user: loginUser.toUserResponse()
@@ -88,7 +88,7 @@ const updateUser = asyncHandler(async (req, res) => {
     const { user } = req.body;
 
     if (!user) {
-        return res.status(400).json({message: "Required a User object"});
+        return res.status(400).json({message: "User object is required"});
     }
 
     const email = req.userEmail;
@@ -126,5 +126,5 @@ module.exports = {
     registerUser,
     getCurrentUser,
     userLogin,
-    updateUser
+    updateUser,
 }
