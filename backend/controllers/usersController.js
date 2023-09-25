@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
+const Subscription = require('../models/Subscription');
+const UserSubscription = require('../models/UserSubscription');
 
 
 //Регистрация
@@ -24,10 +26,32 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const createdUser = await User.create(userObject);
 
-    if (createdUser) { //Пользователь создан
+    if (createdUser) {
+        // Создаем подписку типа "free" по умолчанию
+        const freeSubscription = await Subscription.findOne({ type: "free" });
+
+        if (!freeSubscription) {
+            return res.status(500).json({ message: "Default subscription not found." });
+        }
+
+        // Создаем историю подписки для нового пользователя
+        const userSubscription = new UserSubscription({
+            userId: createdUser._id,
+            subscriptionId: freeSubscription._id,
+            startDate: new Date(),
+            expirationDate: calculateExpirationDate("free"),
+            articlesLeft: freeSubscription.articlesLeft,
+        });
+
+        // Устанавливаем идентификатор подписки пользователя
+        createdUser.subscriptionId = userSubscription._id;
+
+        // Сохраняем новую историю подписки и обновляем пользователя
+        await Promise.all([userSubscription.save(), createdUser.save()]);
+
         res.status(201).json({
             user: createdUser.toUserResponse()
-        })
+        });
     } else {
         res.status(422).json({
             errors: {
@@ -36,6 +60,16 @@ const registerUser = asyncHandler(async (req, res) => {
         });
     }
 });
+
+function calculateExpirationDate(selectedPlan) {
+    const daysToAdd = 
+    selectedPlan === 'monthly' || selectedPlan === 'monthly+' ? 30 :
+    selectedPlan === 'yearly' || selectedPlan === 'yearly+' ? 365 :
+    0;
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + daysToAdd);
+    return expirationDate;
+  }
 
 //Прочитать свой профиль
 //GET /api/user

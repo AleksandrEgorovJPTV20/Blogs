@@ -31,12 +31,29 @@ const updateUserSubscription = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Insufficient funds' });
   }
 
+  let articlesLeft = 0;
+  if (selectedPlan === 'free') {
+    articlesLeft = 5;
+  } else if (selectedPlan === 'monthly') {
+    articlesLeft = 10;
+  } else if (selectedPlan === 'yearly') {
+    articlesLeft = 10;
+  } else if (selectedPlan === 'yearly+') {
+    articlesLeft = 20;
+  } else if (selectedPlan === 'monthly+') {
+    articlesLeft = 20;
+  }else{
+    articlesLeft = 5;
+  }
+
+  
   // создаём историю подписки
   const userSubscription = new UserSubscription({
     userId: user._id,
     subscriptionId: subscription._id,
     startDate: new Date(), // Set the start date to the current date
     expirationDate: calculateExpirationDate(selectedPlan), // Calculate the expiration date
+    articlesLeft: articlesLeft,
   });
 
   //обновляем ид подписки пользователя
@@ -53,7 +70,10 @@ const updateUserSubscription = asyncHandler(async (req, res) => {
 
 //Функция вычисления даты окончания 
 function calculateExpirationDate(selectedPlan) {
-  const daysToAdd = selectedPlan === 'monthly' ? 30 : selectedPlan === 'yearly' ? 365 : 0;
+  const daysToAdd = 
+  selectedPlan === 'monthly' || selectedPlan === 'monthly+' ? 30 :
+  selectedPlan === 'yearly' || selectedPlan === 'yearly+' ? 365 :
+  0;
   const expirationDate = new Date();
   expirationDate.setDate(expirationDate.getDate() + daysToAdd);
   return expirationDate;

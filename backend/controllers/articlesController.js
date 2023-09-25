@@ -135,6 +135,17 @@ const getArticleWithSlug = asyncHandler(async (req, res) => {
 
     const article = await Article.findOne({slug}).exec();
 
+    const userId = req.userId;
+
+    const loginUser = await User.findById(userId).exec();
+
+    const userSubscription = await UserSubscription.findById(loginUser.subscriptionId).exec();
+
+    if(userSubscription.articlesLeft === 0){
+        return res.status(401).json({
+            message: "Articles are not available"
+        });
+    }
     if (!article) {
         return res.status(401).json({
             message: "Article Not Found"
