@@ -17,7 +17,7 @@ login http://localhost:8080/api/users/login
   }
 }
 
-update http://localhost:8080/api/user/
+update http://localhost:8080/api/user/ нужен jwt
 {
   "user": {
     "email": "NEW@ee.ee",
@@ -26,7 +26,7 @@ update http://localhost:8080/api/user/
   }
 }
 
-create http://localhost:8080/api/articles
+create http://localhost:8080/api/articles нужен jwt
 {
   "article": {
     "title": "Заголовок статьи",
@@ -36,7 +36,7 @@ create http://localhost:8080/api/articles
   }
 }
 
-update http://localhost:8080/api/articles/zagolovok-stati
+update http://localhost:8080/api/articles/slug-of-the-article нужен jwt
 {
   "article": {
     "title": "Updated Title",

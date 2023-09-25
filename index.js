@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const path = require('path')
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -24,6 +23,12 @@ app.use('/api/profiles', require('./backend/routes/profileRoutes'));
 
 // article routes
 app.use('/api/articles', require('./backend/routes/articleRoutes'));
+
+// comment routes
+app.use('/api/articles', require('./backend/routes/commentRoutes'));
+
+// tag routes
+app.use('/api/tags', require('./backend/routes/tagRoutes'));
 
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => {

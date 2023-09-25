@@ -16,9 +16,11 @@ const commentSchema = new mongoose.Schema({
     }
 },
     {
-        timestamps: true
+        timestamps: true,
+        versionKey: false
     });
 
+//Возвращаем ответ
 commentSchema.methods.toCommentResponse = async function (user) {
     const authorObj = await User.findById(this.author).exec();
     return {

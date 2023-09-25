@@ -21,6 +21,10 @@ const userSubscriptionSchema = new mongoose.Schema({
     type: Date,
     required: true,
   }, 
+  articlesLeft: {
+    type: Number,
+    required: true,
+  }, 
 },
 {
     versionKey: false,

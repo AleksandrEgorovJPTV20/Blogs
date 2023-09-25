@@ -60,7 +60,7 @@ articleSchema.methods.updateFavoriteCount = async function () {
     return this.save();
 }
 
-//Выводим если пользователь логинился
+//Возвращает ответ
 articleSchema.methods.toArticleResponse = async function (user) {
     const authorObj = await User.findById(this.author).exec();
     return {

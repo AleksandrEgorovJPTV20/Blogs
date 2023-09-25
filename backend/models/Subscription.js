@@ -11,6 +11,11 @@ const subscriptionSchema = new mongoose.Schema({
     price: {
         type: String,
         required: true
+    },
+    articlesLeft: {
+        type: Number,
+        required: true,
+        default: 5
     }
 },
     {
