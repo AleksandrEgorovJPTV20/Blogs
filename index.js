@@ -22,6 +22,9 @@ app.use('/api', require('./backend/routes/subscriptionRoutes'));
 // user routes profiles
 app.use('/api/profiles', require('./backend/routes/profileRoutes'));
 
+// article routes
+app.use('/api/articles', require('./backend/routes/articleRoutes'));
+
 mongoose.connection.once('open', () => {
   app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

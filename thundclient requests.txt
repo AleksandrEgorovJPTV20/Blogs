@@ -1,0 +1,47 @@
+user
+
+registration http://localhost:8080/api/users/
+{
+  "user": {
+    "username": "test",
+    "email": "test@test.ee",
+    "password": "12345"
+  }
+}
+
+login http://localhost:8080/api/users/login
+{
+  "user": {
+    "email": "test@test.ee",
+    "password": "12345"
+  }
+}
+
+update http://localhost:8080/api/user/
+{
+  "user": {
+    "email": "NEW@ee.ee",
+    "username": "new",
+    "money": 100
+  }
+}
+
+create http://localhost:8080/api/articles
+{
+  "article": {
+    "title": "Заголовок статьи",
+    "description": "Описание статьи",
+    "body": "Текст статьи",
+    "tagList": ["тег1", "тег2", "тег3"]
+  }
+}
+
+update http://localhost:8080/api/articles/zagolovok-stati
+{
+  "article": {
+    "title": "Updated Title",
+    "description": "Updated Description",
+    "body": "Updated Body Content",
+    "tagList": ["tag1", "tag2"]
+  }
+}

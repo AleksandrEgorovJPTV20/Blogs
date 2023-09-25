@@ -6,7 +6,7 @@ const asyncHandler = require('express-async-handler');
 
 // POST /api/subscription
 const updateUserSubscription = asyncHandler(async (req, res) => {
-  const userId = req.userId; // Extract the user's ID from the decoded token
+  const userId = req.userId;
   const selectedPlan = req.body.selectedPlan.trim().toLowerCase()
   console.log('Selected Plan:', selectedPlan);
 

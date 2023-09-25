@@ -38,7 +38,8 @@ const articleSchema = new mongoose.Schema({
         ref: 'Comment'
     }]
 }, {
-    timestamps: true
+    timestamps: true,
+    versionKey: false
 });
 
 articleSchema.plugin(uniqueValidator);
