@@ -12,10 +12,9 @@ const subscriptionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    articlesLeft: {
-        type: Number,
+    description: {
+        type: String,
         required: true,
-        default: 5
     }
 },
     {

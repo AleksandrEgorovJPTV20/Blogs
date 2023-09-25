@@ -5,8 +5,14 @@ const UserSubscription = require('../models/UserSubscription'); // Import the Us
 const asyncHandler = require('express-async-handler');
 
 const readAllSubscriptions = asyncHandler(async (req, res) => {
-  const subscriptions = await Subscription.find().select('-_id').exec();
-  res.status(200).json({ subscriptions });
+  try {
+    const subscriptions = await Subscription.find({}, { _id: 0, articlesLeft: 0 });
+
+    res.status(200).json(subscriptions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 
@@ -37,7 +43,7 @@ const updateUserSubscription = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Insufficient funds' });
   }
 
-  const articlesLeft = 0;
+  var articlesLeft = 0;
   if (selectedPlan === 'free') {
     articlesLeft = 5;
   } else if (selectedPlan === 'monthly') {

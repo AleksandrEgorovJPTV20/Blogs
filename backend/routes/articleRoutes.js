@@ -9,7 +9,7 @@ router.get('/feed', verifyJWT, articleController.feedArticles);
 //Список статей
 router.get('/', JWTOptional, articleController.listArticles);
 
-//чтение статить со символами
+//чтение статьей
 router.get('/:slug',verifyJWT, articleController.getArticleWithSlug);
 
 //Создание статьи
