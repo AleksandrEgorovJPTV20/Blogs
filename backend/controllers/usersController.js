@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
             userId: createdUser._id,
             subscriptionId: freeSubscription._id,
             startDate: new Date(),
-            expirationDate: calculateExpirationDate("free"),
+            expirationDate: new Date(),
             articlesLeft: freeSubscription.articlesLeft,
         });
 
@@ -60,16 +60,6 @@ const registerUser = asyncHandler(async (req, res) => {
         });
     }
 });
-
-function calculateExpirationDate(selectedPlan) {
-    const daysToAdd = 
-    selectedPlan === 'monthly' || selectedPlan === 'monthly+' ? 30 :
-    selectedPlan === 'yearly' || selectedPlan === 'yearly+' ? 365 :
-    0;
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + daysToAdd);
-    return expirationDate;
-  }
 
 //Прочитать свой профиль
 //GET /api/user

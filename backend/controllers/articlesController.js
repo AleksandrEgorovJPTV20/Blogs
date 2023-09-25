@@ -1,6 +1,7 @@
 const Article = require('../models/Article');
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
+const UserSubscription = require('../models/UserSubscription');
 //Slugify - это процесс преобразования строки текста, такой как заголовок статьи или имя файла, 
 //в строку, которая может быть использована в URL в качестве "слага" (части URL, представляющей читабельное описание содержания страницы).
 
@@ -133,7 +134,7 @@ const unfavoriteArticle = asyncHandler(async (req, res) => {
 const getArticleWithSlug = asyncHandler(async (req, res) => {
     const { slug } = req.params;
 
-    const article = await Article.findOne({slug}).exec();
+    const article = await Article.findOne({ slug }).exec();
 
     const userId = req.userId;
 
@@ -141,21 +142,33 @@ const getArticleWithSlug = asyncHandler(async (req, res) => {
 
     const userSubscription = await UserSubscription.findById(loginUser.subscriptionId).exec();
 
-    if(userSubscription.articlesLeft === 0){
+    if (userSubscription.expirationDate < userSubscription.startDate) {
+        return res.status(401).json({
+            message: "Subscription has expired"
+        });
+    }
+
+    if (userSubscription.articlesLeft <= 0) {
         return res.status(401).json({
             message: "Articles are not available"
         });
     }
+
     if (!article) {
         return res.status(401).json({
             message: "Article Not Found"
         });
     }
 
+    // Уменьшаем значение articlesLeft на 1 и сохраняем обновленную историю подписки
+    userSubscription.articlesLeft -= 1;
+    await userSubscription.save();
+
     return res.status(200).json({
         article: await article.toArticleResponse(false)
-    })
+    });
 });
+
 
 //обновление статей
 const updateArticle = asyncHandler(async (req, res) => {

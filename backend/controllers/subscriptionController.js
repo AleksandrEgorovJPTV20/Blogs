@@ -4,6 +4,12 @@ const Subscription = require('../models/Subscription'); // Import the Subscripti
 const UserSubscription = require('../models/UserSubscription'); // Import the UserSubscription model
 const asyncHandler = require('express-async-handler');
 
+const readAllSubscriptions = asyncHandler(async (req, res) => {
+  const subscriptions = await Subscription.find().select('-_id').exec();
+  res.status(200).json({ subscriptions });
+});
+
+
 // POST /api/subscription
 const updateUserSubscription = asyncHandler(async (req, res) => {
   const userId = req.userId;
@@ -31,7 +37,7 @@ const updateUserSubscription = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Insufficient funds' });
   }
 
-  let articlesLeft = 0;
+  const articlesLeft = 0;
   if (selectedPlan === 'free') {
     articlesLeft = 5;
   } else if (selectedPlan === 'monthly') {
@@ -81,5 +87,6 @@ function calculateExpirationDate(selectedPlan) {
 
 
 module.exports = {
-    updateUserSubscription
+    updateUserSubscription,
+    readAllSubscriptions
 }
