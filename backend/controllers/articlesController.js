@@ -233,7 +233,6 @@ const feedArticles = asyncHandler(async (req, res) => {
     });
 });
 
-//Список статей - лимит 20.
 const listArticles = asyncHandler(async (req, res) => {
     let limit = 20;
     let offset = 0;
@@ -246,46 +245,53 @@ const listArticles = asyncHandler(async (req, res) => {
         offset = req.query.offset;
     }
     if (req.query.tag) {
-        query.tagList = {$in: [req.query.tag]}
+        query.tagList = { $in: [req.query.tag] };
     }
 
     if (req.query.author) {
-        const author = await User.findOne({username: req.query.author}).exec();
+        const author = await User.findOne({ username: req.query.author }).exec();
         if (author) {
             query.author = author._id;
         }
     }
 
     if (req.query.favorited) {
-        const favoriter = await User.findOne({username: req.query.favorited}).exec();
+        const favoriter = await User.findOne({ username: req.query.favorited }).exec();
         if (favoriter) {
-            query._id = {$in: favoriter.favouriteArticles}
+            query._id = { $in: favoriter.favouriteArticles };
         }
+    }
+
+    if (req.loggedin) {
+        const loginUser = await User.findById(req.userId).exec();
+        const userSubscription = await UserSubscription.findById(loginUser.subscriptionId).exec();
+        
+        // Check if there are available articles
+        if (userSubscription.articlesLeft <= 0) {
+            return res.status(401).json({
+                message: "Articles are not available"
+            });
+        }
+
+        // Decrease the articlesLeft count by 1
+        userSubscription.articlesLeft -= 1;
+        await userSubscription.save();
     }
 
     const filteredArticles = await Article.find(query)
         .limit(Number(limit))
         .skip(Number(offset))
-        .sort({createdAt: 'desc'}).exec()
+        .sort({ createdAt: 'desc' }).exec();
 
     const articleCount = await Article.count(query);
 
-    if (req.loggedin) {
-        const loginUser = await User.findById(req.userId).exec();
-        return res.status(200).json({
-            articles: await Promise.all(filteredArticles.map(async article => {
-                return await article.toArticleResponse(loginUser);
-            })),
-            articlesCount: articleCount
-        });
-    } else {
-        return res.status(200).json({
-            articles: await Promise.all(filteredArticles.map(async article => {
-                return await article.toArticleResponse(false);
-            })),
-            articlesCount: articleCount
-        });
-    }
+    const loginUser = req.loggedin ? await User.findById(req.userId).exec() : null;
+    const responseFunc = req.loggedin ? article => article.toArticleResponse(loginUser) : article => article.toArticleResponseNotBought(false);
+
+    return res.status(200).json({
+        articles: await Promise.all(filteredArticles.map(responseFunc)),
+        articlesCount: articleCount
+    });
 });
 
 module.exports = {

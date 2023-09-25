@@ -29,10 +29,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "https://static.productionready.io/images/smiley-cyrus.jpg"
     },
-    money: {
-        type: Number,
-        default: 0
-    },
     favouriteArticles: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Article'

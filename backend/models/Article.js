@@ -77,6 +77,19 @@ articleSchema.methods.toArticleResponse = async function (user) {
     }
 }
 
+//Возвращает ответ
+articleSchema.methods.toArticleResponseNotBought = async function (user) {
+    const authorObj = await User.findById(this.author).exec();
+    return {
+        title: this.title,
+        description: this.description,
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt,
+        tagList: this.tagList,
+        author:  authorObj.toProfileJSON(user)
+    }
+}
+
 //Добавление комментариев
 articleSchema.methods.addComment = function (commentId) {
     if(this.comments.indexOf(commentId) === -1){

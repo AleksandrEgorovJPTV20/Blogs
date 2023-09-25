@@ -36,13 +36,6 @@ const updateUserSubscription = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'Invalid subscription plan' });
   }
 
-  //Проверка кол-во денег юзера чтобы купить подписку
-  const subscriptionPrice = parseFloat(subscription.price);
-  
-  if (user.money < subscriptionPrice) {
-    return res.status(400).json({ message: 'Insufficient funds' });
-  }
-
   var articlesLeft = 0;
   if (selectedPlan === 'free') {
     articlesLeft = 5;
@@ -70,9 +63,6 @@ const updateUserSubscription = asyncHandler(async (req, res) => {
 
   //обновляем ид подписки пользователя
   user.subscriptionId = userSubscription._id;
-
-  //Вычитаем деньги
-  user.money -= subscriptionPrice;
 
   // Сохраняем новую историю подписки и обновить юзера
   await Promise.all([user.save(), userSubscription.save()]);
