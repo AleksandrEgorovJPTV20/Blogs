@@ -40,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
             subscriptionId: freeSubscription._id,
             startDate: new Date(),
             expirationDate: new Date(),
-            articlesLeft: freeSubscription.articlesLeft,
+            articlesLeft: 5,
         });
 
         // Устанавливаем идентификатор подписки пользователя

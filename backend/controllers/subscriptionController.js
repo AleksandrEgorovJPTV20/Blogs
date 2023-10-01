@@ -51,7 +51,6 @@ const updateUserSubscription = asyncHandler(async (req, res) => {
     articlesLeft = 5;
   }
 
-  
   // создаём историю подписки
   const userSubscription = new UserSubscription({
     userId: user._id,
@@ -84,5 +83,6 @@ function calculateExpirationDate(selectedPlan) {
 
 module.exports = {
     updateUserSubscription,
-    readAllSubscriptions
+    readAllSubscriptions,
+    
 }

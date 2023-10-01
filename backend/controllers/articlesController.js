@@ -142,12 +142,6 @@ const getArticleWithSlug = asyncHandler(async (req, res) => {
 
     const userSubscription = await UserSubscription.findById(loginUser.subscriptionId).exec();
 
-    if (userSubscription.expirationDate < userSubscription.startDate) {
-        return res.status(401).json({
-            message: "Subscription has expired"
-        });
-    }
-
     if (userSubscription.articlesLeft <= 0) {
         return res.status(401).json({
             message: "Articles are not available"
@@ -265,15 +259,13 @@ const listArticles = asyncHandler(async (req, res) => {
     if (req.loggedin) {
         const loginUser = await User.findById(req.userId).exec();
         const userSubscription = await UserSubscription.findById(loginUser.subscriptionId).exec();
-        
-        // Check if there are available articles
+
         if (userSubscription.articlesLeft <= 0) {
             return res.status(401).json({
                 message: "Articles are not available"
             });
         }
 
-        // Decrease the articlesLeft count by 1
         userSubscription.articlesLeft -= 1;
         await userSubscription.save();
     }
