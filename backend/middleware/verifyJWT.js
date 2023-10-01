@@ -30,7 +30,7 @@ const verifyJWT = async (req, res, next) => {
             const userSubscription = await UserSubscription.findOne({ _id: user.subscriptionId }).exec();
             if (userSubscription && userSubscription.expirationDate <= currentDate) {
                 const freeSubscription = await Subscription.findOne({ type: 'free' }).exec();
-                if (freeSubscription && freeSubscription._id.toString() !== userSubscription.subscriptionId.toString() && userSubscription.articlesLeft <= 0) {
+                if (freeSubscription && freeSubscription._id.toString() !== userSubscription.subscriptionId.toString()) {
                     console.log('Subscription has expired');
                     console.log('Creating a new subscription');
                     // Создание новой записи UserSubscription с бесплатной подпиской
