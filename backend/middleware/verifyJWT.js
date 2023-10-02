@@ -4,8 +4,7 @@ const UserSubscription = require('../models/UserSubscription');
 const User = require('../models/User');
 
 const verifyJWT = async (req, res, next) => {
-    const authHeader = req.headers.Authorization;
-    console.log(authHeader);
+    const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Token ')) {
         return res.status(401).json({ message: 'Unauthorized' });
     }

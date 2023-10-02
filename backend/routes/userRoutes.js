@@ -70,14 +70,45 @@ module.exports = router;
 /**
 * @swagger
 * components:
-*   parameters:
-*     authorization:
-*       name: "Token "
+*  schemas:
+*      UserUpdate:
+*          type: object
+*          required:
+*          properties:
+*              user:
+*                  type: object
+*                  properties:
+*                   username:
+*                       type: string
+*                       description: username of User
+*                       example: max
+*                   email:
+*                       type: string
+*                       description: user email
+*                       example: max@test.ee
+*                   password:
+*                       type: string
+*                       description: password user
+*                       example: maksik1303
+*                   bio:
+*                       type: string
+*                       description: password user
+*                       example: maksik1303
+*                   image:
+*                       type: string
+*                       description: password user
+*                       example: maksik1303
+*/
+
+/**
+* @swagger
+* components:
+*   securitySchemes:
+*     JWTAuth:
+*       type: apiKey
+*       name: Authorization
 *       in: header
-*       description: Access Token
-*       required: true
-*       schema:
-*         type: string
+*       default: "Token "
 */
 
 /**
@@ -121,10 +152,52 @@ module.exports = router;
  *             $ref: '#/components/schemas/UserLogin'
  *     responses:
  *       201:
- *         description: The created User.
+ *         description: sign in data.
  *       400:
  *         description: Invalid request data.
  *       422:
- *         description: Failed to register user.
+ *         description: Failed to sign in.
+ */
+
+/**
+ * @swagger
+ * 
+ * /api/user:
+ *   get:
+ *     summary: get User 
+ *     tags: [Users]
+ *     security:
+ *       - JWTAuth: []
+ *     responses:
+ *       201:
+ *         description: User.
+ *       400:
+ *         description: Invalid request data.
+ *       422:
+ *         description: Failed to get user.
+ */
+
+/**
+ * @swagger
+ * 
+ * /api/user:
+ *   put:
+ *     summary: update User 
+ *     tags: [Users]
+*     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserUpdate'
+ *     security:
+ *       - JWTAuth: []
+ *     responses:
+ *       201:
+ *         description: The updated User.
+ *       400:
+ *         description: Invalid request data.
+ *       422:
+ *         description: Failed to update user.
  */
 
