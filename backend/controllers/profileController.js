@@ -5,7 +5,7 @@ const getProfile = asyncHandler(async (req, res) => {
     const { username } = req.params;
     const loggedin = req.loggedin;
 
-    const user = await User.findOne({ username }).exec();
+    const user = await User.findOne({ username: { $regex: username, $options: "i" } }).exec();
 
     if (!user) {
         return res.status(404).json({
