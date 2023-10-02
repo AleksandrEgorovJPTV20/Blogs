@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcrypt');
 const Subscription = require('../models/Subscription');
 const UserSubscription = require('../models/UserSubscription');
-
+const verifyJWT = require('../middleware/verifyJWT');
 
 //Регистрация
 //POST /api/users
@@ -64,8 +64,8 @@ const registerUser = asyncHandler(async (req, res) => {
 //Прочитать свой профиль
 //GET /api/user
 const getCurrentUser = asyncHandler(async (req, res) => {
+    verifyJWT;
     const email = req.userEmail;
-
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
