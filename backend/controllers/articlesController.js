@@ -278,12 +278,22 @@ const listArticles = asyncHandler(async (req, res) => {
     const articleCount = await Article.count(query);
 
     const loginUser = req.loggedin ? await User.findById(req.userId).exec() : null;
-    const responseFunc = req.loggedin ? article => article.toArticleResponse(loginUser) : article => article.toArticleResponseNotBought(false);
-
-    return res.status(200).json({
-        articles: await Promise.all(filteredArticles.map(responseFunc)),
-        articlesCount: articleCount
-    });
+    
+    // Check if the user is authorized (has a valid JWT token)
+    if (req.loggedin) {
+        const responseFunc = article => article.toArticleResponse(loginUser);
+        return res.status(200).json({
+            articles: await Promise.all(filteredArticles.map(responseFunc)),
+            articlesCount: articleCount
+        });
+    } else {
+        // For unauthorized users, provide a different response
+        const responseFunc = article => article.toArticleResponseNotBought(false);
+        return res.status(200).json({
+            articles: await Promise.all(filteredArticles.map(responseFunc)),
+            articlesCount: articleCount
+        });
+    }
 });
 
 module.exports = {

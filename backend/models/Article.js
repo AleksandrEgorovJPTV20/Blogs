@@ -81,6 +81,7 @@ articleSchema.methods.toArticleResponse = async function (user) {
 articleSchema.methods.toArticleResponseNotBought = async function (user) {
     const authorObj = await User.findById(this.author).exec();
     return {
+        slug: this.slug,
         title: this.title,
         description: this.description,
         createdAt: this.createdAt,

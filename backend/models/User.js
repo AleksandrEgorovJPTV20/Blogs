@@ -56,7 +56,7 @@ userSchema.methods.generateAccessToken = function() {
             "user": {
                 "id": this._id,
                 "email": this.email,
-                "password": this.password,
+                "password": this.password
             }
         },
         'secretkey',
