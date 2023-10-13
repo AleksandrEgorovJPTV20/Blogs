@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const Subscription = require('../models/Subscription');
 const UserSubscription = require('../models/UserSubscription');
@@ -15,7 +16,7 @@ const JWTOptional = (req, res, next) => {
 
     jwt.verify(
         token,
-        'secretkey',
+        process.env.SECRET_KEY,
         async (err, decoded) => {
             if (err) {
                 return res.status(403).json({ message: 'Forbidden' });

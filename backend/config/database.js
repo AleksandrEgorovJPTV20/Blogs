@@ -1,14 +1,16 @@
 //Mongoose - это библиотека для Node.js, которая предоставляет средства для работы с MongoDB, одной из популярных NoSQL баз данных.
-
+require('dotenv').config();
 const mongoose = require('mongoose');
-
 
 const connectDB = async () => {
     try {
-        await mongoose.connect('mongodb+srv://admin:Password@dbblogid.h1zf0oa.mongodb.net/Blogs');
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
         console.log('Connected to MongoDB');
     } catch (err) {
-        console.log(err);
+        console.error('Error connecting to MongoDB:', err);
     }
 }
 

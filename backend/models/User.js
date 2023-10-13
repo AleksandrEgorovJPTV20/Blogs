@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const jwt = require("jsonwebtoken");
@@ -59,7 +60,7 @@ userSchema.methods.generateAccessToken = function() {
                 "password": this.password
             }
         },
-        'secretkey',
+        process.env.SECRET_KEY,
         { expiresIn: "1d"}
     );
     return accessToken;
