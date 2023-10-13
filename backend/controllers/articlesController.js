@@ -212,6 +212,18 @@ const feedArticles = asyncHandler(async (req, res) => {
 
     const loginUser = await User.findById(userId).exec();
 
+    const userSubscription = await UserSubscription.findById(loginUser.subscriptionId).exec();
+
+    if (userSubscription.articlesLeft <= 0) {
+        return res.status(401).json({
+            message: "Articles are not available"
+        });
+    }
+
+    // Уменьшаем значение articlesLeft на 1 и сохраняем обновленную историю подписки
+    userSubscription.articlesLeft -= 1;
+    await userSubscription.save();
+
     const filteredArticles = await Article.find({author: {$in: loginUser.followingUsers}})
         .limit(Number(limit))
         .skip(Number(offset))
